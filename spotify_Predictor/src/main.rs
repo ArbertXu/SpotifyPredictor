@@ -1,18 +1,19 @@
 mod data;
 use data::{load_data, extract_train_data};
 mod preprocess;
-use preprocess::{prepare_data, prepare_all};
+use preprocess::{prepare_all};
 mod model;
-use model::{model_run, train_model};
-use dotenv::dotenv;
-use dotenv::from_filename;
-use std::env;
+use model::{train_model};
+// use dotenv::dotenv;
+// use dotenv::from_filename;
+// use std::env;
 mod predict;
 use predict::predict_song_popularity;
 use crate::data::Track;
-mod toCSV;
-use toCSV::export_to_csv;
-// mod token;
+mod to_csv;
+use to_csv::export_to_csv;
+mod hash_track;
+use hash_track::build_track_map;
 // use token::{get_access_token, search_for_track};
 
 fn main() {
@@ -38,9 +39,8 @@ fn main() {
 
     let mut popular: Vec<Track> = Vec::new();
     let mut not_popular: Vec<Track> = Vec::new();
-
     for track in track_result.iter() {
-        if track.popularity > 30 {
+        if track.popularity > 40 {
             popular.push(track.clone());
         } else {
             not_popular.push(track.clone());
@@ -55,12 +55,13 @@ fn main() {
     // let (x,y) = extract_train_data(&balanced);
     let (x,y) = extract_train_data(&balanced);
     // let (train, valid) = prepare_data(&x,&y);
-    let (actualModel, scaler) = prepare_all(&x,&y);
+    let (actual_model, scaler) = prepare_all(&x,&y);
     // let (train, valid) = actualModel.clone().split_with_ratio(0.8);
 
     // model_run(train, valid, &track_result);
-    let model = train_model(actualModel);
-    predict_song_popularity(&track_result, &model, "Shade", "Maren Morris", &scaler);
+    let model = train_model(actual_model);
+    let track_map = build_track_map(&track_result);
+    predict_song_popularity(&track_map, &model, "The one you love", "Randy Newman", &scaler);
     
     
 }

@@ -1,21 +1,27 @@
 use linfa::prelude::*;
-use linfa_logistic::{LogisticRegression, FittedLogisticRegression};
-use ndarray::{array, Array2, Array1};
+// use linfa_logistic::{LogisticRegression, FittedLogisticRegression};
+use ndarray::{ Array2, Array1};
 use crate::data::Track;
 use linfa_preprocessing::norm_scaling::NormScaler;
-use linfa::dataset::{Dataset, DatasetBase};
+use linfa::dataset::{DatasetBase};
 use linfa_trees::DecisionTree;
-pub fn predict_song_popularity(tracks: &[Track], model: & DecisionTree<f32,usize>, track_name: &str, artist_name: &str, scaler: &NormScaler) {
-    let maybe_track = tracks.iter().find(|t| {
-        t.track_name.eq_ignore_ascii_case(track_name) &&
-        t.artist_name.eq_ignore_ascii_case(artist_name)
-    });
+use crate::hash_track::find_track;
+use std::collections::HashMap;
+pub fn predict_song_popularity(tracks: &HashMap<(String, String), Track>, model: & DecisionTree<f32,usize>, track_name: &str, artist_name: &str, scaler: &NormScaler) {
 
-    let track = match maybe_track {
-        Some(t) => t,
-        None => {
-            println!("Track not found in dataset.");
-            return;
+    // let track = match maybe_track {
+    //     Some(t) => t,
+    //     None => {
+    //         println!("Track not found in dataset.");
+    //         return;
+    //     }
+    // };
+    let track = match find_track(tracks, track_name, artist_name) {
+    Some(track) => 
+        track,
+    None => {
+        println!("Song not found");
+        return;
         }
     };
 
@@ -23,12 +29,12 @@ pub fn predict_song_popularity(tracks: &[Track], model: & DecisionTree<f32,usize
         track.danceability,
         track.energy,
         track.instrumentalness,
-        track.loudness,
+        // track.loudness,
         track.acousticness,
         track.valence,
-        track.tempo,
-        track.duration_ms,
-        track.liveness,
+        // track.tempo,
+        // track.duration_ms,
+        // track.liveness,
         track.speechiness,
     ];
 
