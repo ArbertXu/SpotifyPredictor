@@ -7,7 +7,12 @@ use linfa::dataset::{DatasetBase};
 use linfa_trees::DecisionTree;
 use crate::hash_track::find_track;
 use std::collections::HashMap;
-pub fn predict_song_popularity(tracks: &HashMap<(String, String), Track>, model: & DecisionTree<f32,usize>, track_name: &str, artist_name: &str, scaler: &NormScaler) {
+use serde::Serialize;
+use axum::Json;
+use crate::PredictResponse;
+
+
+pub fn predict_song_popularity(tracks: &HashMap<(String, String), Track>, model: & DecisionTree<f32,usize>, track_name: &str, artist_name: &str, scaler: &NormScaler) -> Option<PredictResponse>{
 
     // let track = match maybe_track {
     //     Some(t) => t,
@@ -16,14 +21,7 @@ pub fn predict_song_popularity(tracks: &HashMap<(String, String), Track>, model:
     //         return;
     //     }
     // };
-    let track = match find_track(tracks, track_name, artist_name) {
-    Some(track) => 
-        track,
-    None => {
-        println!("Song not found");
-        return;
-        }
-    };
+    let track = find_track(tracks, track_name, artist_name)?;
 
     let features = vec![
         track.danceability,
@@ -51,11 +49,25 @@ pub fn predict_song_popularity(tracks: &HashMap<(String, String), Track>, model:
     let predicted_label = prediction[0];
     let actual_label = if track.popularity > 60 { 1 } else { 0 };
 
-    println!(
-        "Track: '{}' by {}\nPredicted: {}\nActual: {}",
-        track.track_name,
-        track.artist_name,
-        if predicted_label == 1 { "Popular" } else { "Not Popular" },
-        if actual_label == 1 { "Popular" } else { "Not Popular" },
-    );
+    // println!(
+    //     "Track: '{}' by {}\nPredicted: {}\nActual: {}",
+    //     track.track_name,
+    //     track.artist_name,
+    //     if predicted_label == 1 { "Popular" } else { "Not Popular" },
+    //     if actual_label == 1 { "Popular" } else { "Not Popular" },
+    // );
+    Some(PredictResponse {
+        track_name: track.track_name.clone(),
+        artist_name: track.artist_name.clone(),
+        predicted: if predicted_label == 1 {
+            "Popular".into()
+        } else {
+            "Not Popular".into()
+        },
+        actual: if actual_label == 1 {
+            "Actually Popular".into()
+        } else {
+            "Not Popular".into()
+        },
+    })
 }
