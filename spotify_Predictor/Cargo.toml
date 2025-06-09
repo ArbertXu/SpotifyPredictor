@@ -23,3 +23,5 @@ tokio = { version = "1.37", features = ["full"] }
 tower = "0.4"
 tower-http = { version = "0.5", features = ["cors"] }
 axum-server = "0.7.2"
+[profile.release]
+debug = true

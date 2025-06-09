@@ -75,3 +75,27 @@ pub fn extract_train_data(tracks: &[Track]) -> (Array2<f32>, Array1<usize>) {
     let label_array = Array1::from(labels);
     return (features_array, label_array)
 }
+
+pub fn extract_data_own(tracks: &[Track]) -> (Vec<Vec<f32>>, Vec<u8>)
+{
+    let mut features = Vec::with_capacity(tracks.len());
+    let mut labels = Vec::with_capacity(tracks.len());
+    for track in tracks {
+        features.push(vec![
+            track.danceability,
+             track.energy,
+              track.instrumentalness,
+            //    track.loudness,
+                track.acousticness,
+                 track.valence,
+            //  track.tempo,
+            // track.duration_ms,
+            //  track.liveness,
+
+              track.speechiness,
+              ]);
+        labels.push(if track.popularity > 40 {1} else {0});
+    }
+    return (features, labels)
+}
+

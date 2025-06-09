@@ -12,7 +12,7 @@ use axum::Json;
 use crate::PredictResponse;
 
 
-pub fn predict_song_popularity(tracks: &HashMap<(String, String), Track>, model: & DecisionTree<f32,usize>, track_name: &str, artist_name: &str, scaler: &NormScaler) -> Option<PredictResponse>{
+pub fn predict_song_popularity(tracks: &HashMap<(String, String), Track>, model: & DecisionTree<f32,usize>, track_name: &str, artist_name: &str, scaler: &NormScaler) -> Option<(Track, usize, usize)>{
 
     // let track = match maybe_track {
     //     Some(t) => t,
@@ -48,7 +48,8 @@ pub fn predict_song_popularity(tracks: &HashMap<(String, String), Track>, model:
 
     let predicted_label = prediction[0];
     let actual_label = if track.popularity > 60 { 1 } else { 0 };
-
+    Some((track.clone(), predicted_label, actual_label))
+    
     // println!(
     //     "Track: '{}' by {}\nPredicted: {}\nActual: {}",
     //     track.track_name,
@@ -56,18 +57,18 @@ pub fn predict_song_popularity(tracks: &HashMap<(String, String), Track>, model:
     //     if predicted_label == 1 { "Popular" } else { "Not Popular" },
     //     if actual_label == 1 { "Popular" } else { "Not Popular" },
     // );
-    Some(PredictResponse {
-        track_name: track.track_name.clone(),
-        artist_name: track.artist_name.clone(),
-        predicted: if predicted_label == 1 {
-            "Popular".into()
-        } else {
-            "Not Popular".into()
-        },
-        actual: if actual_label == 1 {
-            "Actually Popular".into()
-        } else {
-            "Not Popular".into()
-        },
-    })
+    // Some(PredictResponse {
+    //     track_name: track.track_name.clone(),
+    //     artist_name: track.artist_name.clone(),
+    //     predicted: if predicted_label == 1 {
+    //         "Popular".into()
+    //     } else {
+    //         "Not Popular".into()
+    //     },
+    //     actual: if actual_label == 1 {
+    //         "Actually Popular".into()
+    //     } else {
+    //         "Not Popular".into()
+    //     },
+    // })
 }
