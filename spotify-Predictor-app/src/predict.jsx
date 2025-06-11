@@ -21,38 +21,39 @@ function PredictForm() {
   };
 
   return (
-    <div>
-      <h2>Predict Song Popularity</h2>
-      <form onSubmit={handleSubmit}>
-        <input
+    <div className="flex flex-col items-center">
+      <h2 className='text-white justify-center text-4xl font-bold p-5'>Predict Song Popularity </h2>
+      <form className='flex flex-col space-y-5 bg-[#0A1128] w-full max-w-sm  border-5 border-[#0A1128] rounded-lg'  onSubmit={handleSubmit}>
+        <input className='bg-[#0A1128] min-w-3xs text-center'
           type="text"
           placeholder="Track Name"
           value={trackName}
           onChange={(e) => setTrackName(e.target.value)}
         />
-        <input
+        <input className='bg-[#0A1128] min-w-xs text-center'
           type="text"
           placeholder="Artist Name"
           value={artistName}
           onChange={(e) => setArtistName(e.target.value)}
         />
-        <button type="submit">Predict</button>
+        <button className='bg-[#0A1128] min-w-xs hover:bg-cyan-400' type="submit">Predict</button>
       </form>
+      
 
       {result && (
-        <div>
-            <h3>Prediction Result</h3>
+        <div className='p-5'>
+            <h3 className='text-xl font-bold'>Prediction Result</h3>
             <p><strong>Track:</strong> {result.track_name}</p>
             <p><strong>Artist:</strong> {result.artist_name}</p>
             <p><strong>Predicted:</strong> {result.predicted}</p>
             <p><strong>Actual:</strong> {result.actual}</p>
 
             {result.recommendations && result.recommendations.length > 0 && (
-            <div>
-                <h4>Similar Songs:</h4>
+            <div className='p-5'>
+                <h4 className='text-white'>Similar Songs:</h4>
                 <ul>
                 {result.recommendations.map((rec, idx) => (
-                    <li key={idx}>
+                    <li className='text-white p-2' key={idx}>
                     {rec.track_name} by {rec.artist_name}
                     </li>
                 ))}
