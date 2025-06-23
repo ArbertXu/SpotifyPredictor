@@ -27,7 +27,6 @@ fn gini_impurty(labels: &[u8]) ->f32 {
 }
 
 fn find_split(features: &[Vec<f32>], labels: &[u8], indices: &[usize],) -> Option<(usize, f32, Vec<usize>, Vec<usize>)> {
-    println!("Features: {}, Labels: {}", features.len(), labels.len());
     let n_features = features[0].len();
     let mut best_gini_impurity = f32::MAX;
     let mut best_split = None;
