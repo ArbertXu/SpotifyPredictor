@@ -9,7 +9,7 @@ function PredictForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://127.0.0.1:3001/predict', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/predict`, {
         track_name: trackName,
         artist_name: artistName,
       });
